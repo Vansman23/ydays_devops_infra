@@ -1,0 +1,55 @@
+services:
+  haproxy:
+        container_name: HAPROXY
+        image: haproxy:2.7
+        volumes:
+            - ./haproxy:/haproxy-override
+            - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+        ports:
+            - "80:80"
+            - "70:70" 
+        networks:
+          static-network:
+            ipv4_address: ${HAPROXY_IPV4_ADDRESS}
+
+  ANSIBLE_WP01:
+    image: ansible:latest
+    container_name: ANSIBLE_WP01
+    #command: >
+    #   sh -c " command: chmod +x /startup_script/bash/startup.sh && bash /startup_script/bash/startup.sh "
+    #command: >
+      # sh -c " apt update && apt install ansible -y  && chmod 0444 /home/ansible && service ssh start  && tail -F anything "
+      # ansible-playbook /home/ansible/playbook.yml -i /home/ansible/hosts  && sshpass -p 'Root123.' ssh-copy-id -f root@172.20.128.2 && apt install sshpass
+      # ssh-copy-id -f root@172.20.128.2
+    volumes:
+            - ./ansible-playbooks:/home/ansible
+    networks:
+      static-network:
+        ipv4_address: ${ANSIBLE_WP01_IPV4_ADDRESS}
+  WP02:
+    image: ubuntu_ssh:latest
+    container_name: WP02
+    command: >
+    #   bash -c "  "
+    networks:
+      static-network:
+        ipv4_address: ${WP02_IPV4_ADDRESS}
+    volumes:
+      - ./bash:/startup_script
+  WP03:
+    image: ubuntu_ssh:latest
+    container_name: WP03
+    #command: >
+    #   bash -c " command: chmod +x /startup_script/bash/startup.sh && bash /startup_script/bash/startup.sh "
+    networks:
+      static-network:
+        ipv4_address: ${WP03_IPV4_ADDRESS}
+    volumes:
+      - ./bash:/startup_script
+networks:
+  static-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    
