@@ -15,12 +15,10 @@ services:
   ANSIBLE_WP01:
     image: ansible:latest
     container_name: ANSIBLE_WP01
-    #command: >
-    #   sh -c " command: chmod +x /startup_script/bash/startup.sh && bash /startup_script/bash/startup.sh "
-    #command: >
-      # sh -c " apt update && apt install ansible -y  && chmod 0444 /home/ansible && service ssh start  && tail -F anything "
-      # ansible-playbook /home/ansible/playbook.yml -i /home/ansible/hosts  && sshpass -p 'Root123.' ssh-copy-id -f root@172.20.128.2 && apt install sshpass
-      # ssh-copy-id -f root@172.20.128.2
+    #commandes à  executer pour  préparer l'environnement
+    # ssh-keygen
+    # ssh-copy-id -f root@172.20.128.2
+    # ansible-playbook /home/ansible/playbook.yml -i /home/ansible/hosts $
     volumes:
             - ./ansible-playbooks:/home/ansible
     networks:
